@@ -1,0 +1,58 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+@section scripts {
+    <script type="text/javascript">
+        function enableTab(id) {
+            var el = document.getElementById(id);
+            el.onkeydown = function (e) {
+                if (e.keyCode === 9) { // tab was pressed
+
+                    // get caret position/selection
+                    var val = this.value,
+                        start = this.selectionStart,
+                        end = this.selectionEnd;
+
+                    // set textarea value to: text before caret + tab + text after caret
+                    this.value = val.substring(0, start) + '\t' + val.substring(end);
+
+                    // put caret at right position again
+                    this.selectionStart = this.selectionEnd = start + 1;
+
+                    // prevent the focus lose
+                    return false;
+
+                }
+            };
+        }
+        enableTab("requestcontent-field");
+    </script>
+}
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <form method="post">
+        <div asp-validation-summary="All"></div>
+        <div class="form-group">
+            <input class="form-control" asp-for="RequestUrl" type="text" placeholder="Url" required />
+        </div>
+        <div class="form-group">
+            <textarea rows="7" id="requestcontent-field" class="form-control" asp-for="RequestContent" placeholder="Additional request content"></textarea>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    @if (Model.RequestResponse != null)
+    {
+        <div>
+            <h5 class="display-4">Response headers:</h5>
+            <div>@Model.RequestResponse?.Headers</div>
+
+            <h4 class="display-4">Response status code:</h4>
+            <div>@Model.RequestResponse?.HttpStatusCode</div>
+
+            <h4 class="display-4">Response body:</h4>
+            <textarea class="form-control" rows="7">@Model.RequestResponse?.Body</textarea>
+        </div>
+    }
+</div>
