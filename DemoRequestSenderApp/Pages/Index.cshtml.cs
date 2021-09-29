@@ -79,9 +79,15 @@ namespace DemoRequestSenderApp.Pages
                 var contentHeaders = requestContent.Headers.Where(c => c.Key.StartsWith("Content"));
                 foreach (var item in contentHeaders)
                 {
-                    httpRequestMessage.Content.Headers.Add(item.Key, item.Value);
+                    var separator = ",";
+                    if (string.Compare(item.Key, "content-type", true) == 0)
+                    {
+                        separator = ";";
+                    }
+                    if (httpRequestMessage.Content.Headers.Any(h => string.Compare(item.Key, h.Key, true) == 0))
+                        httpRequestMessage.Content.Headers.Remove(item.Key);
+                    httpRequestMessage.Content.Headers.Add(item.Key, string.Join(separator, item.Value));
                 }
-
             }
         }
 
@@ -93,7 +99,9 @@ namespace DemoRequestSenderApp.Pages
                 {
                     if (item.Key.StartsWith("Content"))
                         continue;
-                    httpRequestMessage.Headers.Add(item.Key, item.Value);
+                    if (httpRequestMessage.Headers.Any(h => string.Compare(item.Key, h.Key, true) == 0))
+                        httpRequestMessage.Headers.Remove(item.Key);
+                    httpRequestMessage.Headers.Add(item.Key, string.Join(",", item.Value));
                 }
 
             }
