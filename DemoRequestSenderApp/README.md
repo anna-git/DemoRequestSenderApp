@@ -1,5 +1,6 @@
 ﻿# How to run
 
+install .net > https://dotnet.microsoft.com/download
 
 docker build -t requestsender ../ -f ./Dockerfile
 
